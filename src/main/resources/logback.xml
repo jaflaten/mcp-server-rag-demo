@@ -1,0 +1,37 @@
+<configuration>
+    <!-- 
+        CRITICAL: MCP servers using STDIO transport MUST NOT write to STDOUT
+        STDOUT is reserved exclusively for JSON-RPC messages
+        All logs must go to STDERR or a file
+    -->
+    
+    <!-- Disable logback's own status messages -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+    
+    <!-- Log to STDERR (not STDOUT) -->
+    <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Optional: Log to file for debugging -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/mcp-server.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Root logger: WARN level, output to STDERR only -->
+    <root level="ERROR">
+        <appender-ref ref="STDERR"/>
+    </root>
+    
+    <!-- Quiet down verbose libraries -->
+    <logger name="org.eclipse.jetty" level="ERROR"/>
+    <logger name="io.netty" level="ERROR"/>
+    <logger name="io.ktor" level="ERROR"/>
+</configuration>
