@@ -26,7 +26,7 @@ WORKDIR /app
 RUN apk add --no-cache curl
 
 # Copy the fat JAR from builder stage
-COPY --from=builder /app/build/libs/mcp-server-demo-*-all.jar ./app.jar
+COPY --from=builder /app/build/libs/mcp-server-demo-all.jar ./app.jar
 
 # Copy documents directory for RAG pipeline
 COPY documents ./documents
