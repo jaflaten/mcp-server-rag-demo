@@ -31,10 +31,6 @@ COPY --from=builder /app/build/libs/mcp-server-demo-all.jar ./app.jar
 # Copy documents directory for RAG pipeline
 COPY documents ./documents
 
-# Copy vector store if it exists (optional)
-RUN if [ -f vector_store.json ]; then cp vector_store.json ./vector_store.json; fi
-
-
 # Create a volume for the vector store to persist data
 VOLUME ["/app/data"]
 
