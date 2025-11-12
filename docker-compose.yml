@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # MCP RAG Server
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcp-rag-server
+    ports:
+      - "8080:8080"
+    environment:
+      # Use host.docker.internal to connect to Ollama running on host
+      OLLAMA_URL: "http://host.docker.internal:11434"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+      VECTOR_STORE_PATH: "/app/data/vector_store.json"
+      DOCUMENTS_PATH: "/app/documents"
+    volumes:
+      # Persist vector store data
+      - ./data:/app/data
+      # Mount documents directory (optional, already in image)
+      - ./documents:/app/documents:ro
+      # Mount vector store if you want to use existing one
+      - ./vector_store.json:/app/data/vector_store.json:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    extra_hosts:
+      # Allow container to access host services (like Ollama)
+      - "host.docker.internal:host-gateway"
+
+  # Optional: Include Ollama in the compose stack
+  # Uncomment if you want to run Ollama in Docker as well
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: ollama
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama-data:/root/.ollama
+  #   restart: unless-stopped
+
+# volumes:
+#   ollama-data:
