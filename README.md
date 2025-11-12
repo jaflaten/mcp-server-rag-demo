@@ -37,7 +37,11 @@ See [RAG_README.md](RAG_README.md) for complete RAG documentation.
 
 ## Running the Server
 
-The server uses STDIO transport for communication, which means it reads from standard input and writes to standard output:
+You can run the MCP server in two modes:
+
+### 1. Stdio Mode (for Claude Desktop, MCP Inspector)
+
+The server uses STDIO transport for communication with MCP clients:
 
 ```bash
 ./gradlew run
@@ -48,6 +52,27 @@ Or run the compiled JAR:
 ```bash
 java -jar build/libs/mcp-server-demo-0.0.1-all.jar
 ```
+
+### 2. HTTP Mode (for Web Applications, APIs)
+
+Run as an HTTP server on port 8080:
+
+```bash
+./gradlew runHttpServer
+```
+
+Then access via HTTP:
+```bash
+# Health check
+curl http://localhost:8080/health
+
+# Call a tool
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"tool":"rag_query","arguments":{"query":"What type is Lapras?"}}' \
+  http://localhost:8080/mcp/call
+```
+
+See [HTTP_MCP_SERVER.md](HTTP_MCP_SERVER.md) for complete HTTP API documentation.
 
 ## Available Tools
 

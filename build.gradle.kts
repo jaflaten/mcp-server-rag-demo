@@ -15,10 +15,21 @@ application {
     mainClass = "no.flaten.HelloWorldMcpServerKt"
 }
 
+// Task to run HTTP/SSE version of MCP server
+tasks.register<JavaExec>("runHttpServer") {
+    group = "mcp"
+    description = "Run the HTTP/JSON-RPC MCP server on port 8080"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("no.flaten.SimpleHttpMcpServerKt")
+    standardInput = System.`in`
+}
+
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-netty")
     implementation("io.ktor:ktor-server-cio")
+    implementation("io.ktor:ktor-server-sse")
+    implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.modelcontextprotocol:kotlin-sdk:${mcpVersion}")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-server-core")
