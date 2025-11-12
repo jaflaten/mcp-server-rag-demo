@@ -1,6 +1,6 @@
 # Multi-stage build for MCP RAG Server
 # Stage 1: Build the application
-FROM gradle:8.5-jdk21 AS builder
+FROM gradle:8.11-jdk21 AS builder
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN gradle dependencies --no-daemon || true
 COPY src ./src
 
 # Build the fat JAR
-RUN gradle buildFatJar --no-daemon
+RUN gradle shadowJar --no-daemon
 
 # Stage 2: Runtime image
 FROM amazoncorretto:21-alpine
@@ -26,7 +26,7 @@ WORKDIR /app
 RUN apk add --no-cache curl
 
 # Copy the fat JAR from builder stage
-COPY --from=builder /app/build/libs/mcp-server-demo-all.jar ./app.jar
+COPY --from=builder /app/build/libs/mcp-server-demo-*-all.jar ./app.jar
 
 # Copy documents directory for RAG pipeline
 COPY documents ./documents
