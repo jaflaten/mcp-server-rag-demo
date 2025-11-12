@@ -51,10 +51,18 @@ fun runHelloWorldMcpServer() {
         if (ragQueryService == null) {
             System.err.println("Initializing RAG service...")
             
+            // Determine vector store path - use absolute path from home directory
+            val vectorStorePath = "/Users/Jorn-Are.Klubben.Flaten/dev/solo/mcp-server-demo/vector_store.json"
+            val vectorStoreFile = File(vectorStorePath)
+            
+            if (!vectorStoreFile.exists()) {
+                throw Exception("Failed to load vector store from $vectorStorePath. Please run the ingestion pipeline first.")
+            }
+            
             // Load vector store
-            val vectorStore = VectorStore("vector_store.json")
+            val vectorStore = VectorStore(vectorStorePath)
             if (!vectorStore.load()) {
-                throw Exception("Failed to load vector store. Please run the ingestion pipeline first.")
+                throw Exception("Failed to load vector store from $vectorStorePath. Please run the ingestion pipeline first.")
             }
             System.err.println("✓ Loaded ${vectorStore.size()} chunks from vector store")
             
